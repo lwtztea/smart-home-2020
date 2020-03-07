@@ -1,47 +1,73 @@
 package ru.sbt.mipt.oop;
 
-public class DoorEvent {
+import static ru.sbt.mipt.oop.SensorEventType.*;
 
-    public static void handleDoorEvent(SmartHome smartHome, SensorEvent event) {
+public class DoorEventHandler implements EventHandler {
+
+    private SmartHome smartHome;
+
+    DoorEventHandler(SmartHome smartHome) {
+        this.smartHome = smartHome;
+    }
+
+    public void handleSmartHomeEvent(SensorEvent event) {
 
         if (!isDoorEvent(event.getType())) return;
-        Object[] changeableRoomAndDoor = findChangeableRoomAndDoor(smartHome, event.getObjectId);
-        if (changeableRoomAndDoor != null) {
-            changeDoorState(smartHome, event, (Room) changeableRoomAndDoor[0], (Door) changeableRoomAndDoor[1]);
+
+        Room changedRoom = findRoomWhereChangedDoor(smartHome, event.getObjectId());
+        assert changedRoom != null;
+
+        if (changedRoom.getName().equals("hall") && event.getType() == DOOR_CLOSED) {
+            hallRoomEvent(smartHome, changedRoom, event);
+            return;
         }
+
+        Door changedDoor = findChangedDoorInRoom(changedRoom, event.getObjectId());
+        assert changedDoor != null;
+
+        changeDoorState(event, changedRoom, changedDoor);
     }
 
     private static boolean isDoorEvent(SensorEventType type) {
 
-        if (type == DOOR_OPEN || type == DOOR_CLOSED)
-            return true;
-        return false;
+        return type == DOOR_OPEN || type == DOOR_CLOSED;
     }
 
-    private static Object[] findChangeableRoomAndDoor(SmartHome smartHome, String objectId) {
+    private static Room findRoomWhereChangedDoor(SmartHome smartHome, String objectId) {
 
         for (Room room : smartHome.getRooms()) {
             for (Door door : room.getDoors()) {
                 if (door.getId().equals(objectId)) {
-                    return new Object[]{room, door};
+                    return room;
                 }
             }
         }
         return null;
     }
 
-    private static void changeDoorState(SmartHome smartHome, SensorEvent event, Room room, Door door) {
+    private static Door findChangedDoorInRoom(Room room, String objectId) {
 
-        if (event.getType() == DOOR_OPEN) {
-            door.setOpen(true);
-            System.out.println("Door " + door.getId() + " in room " + room.getName() + " was opened.");
-        }
-        if (event.getType() == DOOR_CLOSED) {
-            door.setOpen(false);
-            System.out.println("Door " + door.getId() + " in room " + room.getName() + " was closed.");
-            if (room.getName().equals("hall")) {
-                Light.turnOffAllLights(smartHome);
+        for (Door door : room.getDoors()) {
+            if (door.getId().equals(objectId)) {
+                return door;
             }
         }
+        return null;
+    }
+
+    private static void changeDoorState(SensorEvent event, Room room, Door door) {
+
+        String action = event.getType() == DOOR_OPEN ? "opened" : "closed";
+        door.setOpen(event.getType() == DOOR_OPEN);
+        System.out.println("Door " + door.getId() + " in room " + room.getName() + " was " + action);
+    }
+
+    private static void hallRoomEvent(SmartHome smartHome, Room hall, SensorEvent event) {
+
+        Door changedDoor = findChangedDoorInRoom(hall, event.getObjectId());
+        assert changedDoor != null;
+        changedDoor.setOpen(false);
+        System.out.println("Door " + changedDoor.getId() + " in hall was closed.");
+        LightEventHandler.turnOffAllLights(smartHome);
     }
 }
