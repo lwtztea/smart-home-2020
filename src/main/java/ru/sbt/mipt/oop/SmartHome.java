@@ -32,12 +32,4 @@ public class SmartHome {
         }
         return allObjects;
     }
-
-    public Iterator createLightIterator() {
-        return new LightIterator(this);
-    }
-
-    public Iterator createDoorIterator() {
-        return new DoorIterator(this);
-    }
 }
