@@ -21,6 +21,22 @@ public class Room {
         return doors;
     }
 
+    public boolean hasLight(String lightId) {
+
+        for (Light currentLight : this.getLights()) {
+            if (currentLight.getId().equals(lightId)) return true;
+        }
+        return false;
+    }
+
+    public boolean hasDoor(String doorId) {
+
+        for (Door currentDoor : this.getDoors()) {
+            if (currentDoor.getId().equals(doorId)) return true;
+        }
+        return false;
+    }
+
     public String getName() {
         return name;
     }
