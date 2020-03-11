@@ -21,4 +21,23 @@ public class SmartHome {
     public Collection<Room> getRooms() {
         return rooms;
     }
+
+    public ArrayList<Object> getHomeObjectList() {
+
+        ArrayList<Object> allObjects = new ArrayList<>();
+        for (Room room : this.getRooms()) {
+            allObjects.add(room);
+            allObjects.addAll(room.getDoors());
+            allObjects.addAll(room.getLights());
+        }
+        return allObjects;
+    }
+
+    public Iterator createLightIterator() {
+        return new LightIterator(this);
+    }
+
+    public Iterator createDoorIterator() {
+        return new DoorIterator(this);
+    }
 }
