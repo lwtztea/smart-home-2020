@@ -16,4 +16,8 @@ public class Light {
     public void setOn(boolean on) {
         isOn = on;
     }
+    
+    public boolean isOn() {
+        return isOn;
+    }
 }
