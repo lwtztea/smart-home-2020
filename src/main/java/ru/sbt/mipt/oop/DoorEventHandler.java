@@ -16,11 +16,6 @@ public class DoorEventHandler implements EventHandler {
 
         Room changedRoom = findRoomWhereChangedDoor(smartHome, event.getObjectId());
         if (changedRoom == null) return;
-        
-        if (changedRoom.getName().equals("hall") && event.getType() == DOOR_CLOSED) {
-            hallRoomEvent(smartHome, changedRoom, event);
-            return;
-        }
 
         Door changedDoor = findChangedDoorInRoom(changedRoom, event.getObjectId());
         if (changedDoor == null) return;
@@ -62,12 +57,4 @@ public class DoorEventHandler implements EventHandler {
         System.out.println("Door " + door.getId() + " in room " + room.getName() + " was " + action);
     }
 
-    private static void hallRoomEvent(SmartHome smartHome, Room hall, SensorEvent event) {
-
-        Door changedDoor = findChangedDoorInRoom(hall, event.getObjectId());
-        assert changedDoor != null;
-        changedDoor.setOpen(false);
-        System.out.println("Door " + changedDoor.getId() + " in hall was closed.");
-        LightEventHandler.turnOffAllLights(smartHome);
-    }
 }
