@@ -56,15 +56,4 @@ public class LightEventHandler implements EventHandler {
         light.setOn(event.getType() == LIGHT_ON);
         System.out.println("Light " + light.getId() + " in room " + room.getName() + " was turned " + action);
     }
-
-    public static void turnOffAllLights(SmartHome smartHome) {
-
-        for (Room homeRoom : smartHome.getRooms()) {
-            for (Light light : homeRoom.getLights()) {
-                light.setOn(false);
-                SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
-                CommandSender.sendCommand(command);
-            }
-        }
-    }
 }
