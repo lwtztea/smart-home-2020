@@ -15,15 +15,15 @@ public class DoorEventHandler implements EventHandler {
         if (!isDoorEvent(event.getType())) return;
 
         Room changedRoom = findRoomWhereChangedDoor(smartHome, event.getObjectId());
-        assert changedRoom != null;
-
+        if (changedRoom == null) return;
+        
         if (changedRoom.getName().equals("hall") && event.getType() == DOOR_CLOSED) {
             hallRoomEvent(smartHome, changedRoom, event);
             return;
         }
 
         Door changedDoor = findChangedDoorInRoom(changedRoom, event.getObjectId());
-        assert changedDoor != null;
+        if (changedDoor == null) return;
 
         changeDoorState(event, changedRoom, changedDoor);
     }
