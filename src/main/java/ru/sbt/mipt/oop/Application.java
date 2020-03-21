@@ -1,22 +1,26 @@
 package ru.sbt.mipt.oop;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class Application {
 
-    public static void main(String... args) throws IOException {
+    public static void main(String... args) {
 
         SmartHome smartHome = new SmartHomeStateReader().readJson("smart-home-1.js");
-        SensorEvent event = new SensorEventGenerator().getRandomSensorEvent();
-        List<EventHandler> handlers = Arrays.asList(new DoorEventHandler(smartHome), new LightEventHandler(smartHome));
+
+        List<EventHandler> handlers = Arrays.asList(new LightEventHandler(smartHome), new DoorEventHandler(smartHome),
+                new HallDoorEventHandler(smartHome));
+
+        SensorEventGenerator eventGenerator = new RandomEventGenerator();
+        SensorEvent event = eventGenerator.getEvent();
+
         while (event != null) {
             System.out.println("Got event: " + event);
-            for (EventHandler handler: handlers) {
+            for (EventHandler handler : handlers) {
                 handler.handleSmartHomeEvent(event);
             }
-            event = new SensorEventGenerator().getRandomSensorEvent();
+            event = eventGenerator.getEvent();
         }
     }
 }
