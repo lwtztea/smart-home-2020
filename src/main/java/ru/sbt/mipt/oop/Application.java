@@ -9,7 +9,8 @@ public class Application {
 
         SmartHome smartHome = new SmartHomeStateReader().readJson("smart-home-1.js");
 
-        List<EventHandler> handlers = Arrays.asList(new DoorEventHandler(smartHome), new LightEventHandler(smartHome));
+        List<EventHandler> handlers = Arrays.asList(new LightEventHandler(smartHome), new DoorEventHandler(smartHome),
+                new HallDoorEventHandler(smartHome));
 
         SensorEventGenerator eventGenerator = new RandomEventGenerator();
         SensorEvent event = eventGenerator.getEvent();
