@@ -15,10 +15,10 @@ public class LightEventHandler implements EventHandler {
         if (!isLightEvent(event.getType())) return;
 
         Room changedRoom = findRoomWhereChangedLight(smartHome, event.getObjectId());
-        assert changedRoom != null;
+        if (changedRoom == null) return;
 
         Light changedLight = findChangedLightInRoom(changedRoom, event.getObjectId());
-        assert changedLight != null;
+        if (changedLight == null) return;
 
         changeLightState(event, changedRoom, changedLight);
     }
