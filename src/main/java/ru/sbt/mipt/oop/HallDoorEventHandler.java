@@ -12,35 +12,27 @@ public class HallDoorEventHandler implements EventHandler {
 
         if (event.getType() != SensorEventType.DOOR_CLOSED) return;
 
-        Room changedRoom = findRoomWhereChangedDoor(smartHome, event.getObjectId());
-        if (changedRoom == null) return;
-
-        if (changedRoom.getName().equals("hall")) {
-            // дверь закрывается в обработчике события двери
-            turnOffAllLights(smartHome);
-        }
-    }
-
-    private static Room findRoomWhereChangedDoor(SmartHome smartHome, String objectId) {
-
-        for (Room room : smartHome.getRooms()) {
-            for (Door door : room.getDoors()) {
-                if (door.getId().equals(objectId)) {
-                    return room;
-                }
-            }
-        }
-        return null;
+        smartHome.execute(object -> {
+            if (!(object instanceof Room)) return;
+            Room room = (Room) object;
+            if (!(room.getName().equals("hall"))) return;
+            room.execute(roomObjects -> {
+                if (!(roomObjects instanceof Door)) return;
+                Door door = (Door) roomObjects;
+                if (!(door.getId().equals(event.getObjectId()))) return;
+                turnOffAllLights(smartHome);
+            });
+        });
     }
 
     public static void turnOffAllLights(SmartHome smartHome) {
 
-        for (Room homeRoom : smartHome.getRooms()) {
-            for (Light light : homeRoom.getLights()) {
-                light.setOn(false);
-                SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
-                CommandSender.sendCommand(command);
-            }
-        }
+        smartHome.execute(object -> {
+            if (!(object instanceof Light)) return;
+            Light light = (Light) object;
+            light.setOn(false);
+            SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
+            CommandSender.sendCommand(command);
+        });
     }
 }
