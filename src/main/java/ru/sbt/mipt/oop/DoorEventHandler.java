@@ -1,7 +1,5 @@
 package ru.sbt.mipt.oop;
 
-import static ru.sbt.mipt.oop.SensorEventType.*;
-
 public class DoorEventHandler implements EventHandler {
 
     private SmartHome smartHome;
@@ -14,47 +12,23 @@ public class DoorEventHandler implements EventHandler {
 
         if (!isDoorEvent(event.getType())) return;
 
-        Room changedRoom = findRoomWhereChangedDoor(smartHome, event.getObjectId());
-        if (changedRoom == null) return;
-
-        Door changedDoor = findChangedDoorInRoom(changedRoom, event.getObjectId());
-        if (changedDoor == null) return;
-
-        changeDoorState(event, changedRoom, changedDoor);
+        smartHome.execute(object -> {
+            if (!(object instanceof Door)) return;
+            Door door = (Door) object;
+            if (!(door.getId().equals(event.getObjectId()))) return;
+            changeDoorState(event, door);
+        });
     }
 
     private static boolean isDoorEvent(SensorEventType type) {
 
-        return type == DOOR_OPEN || type == DOOR_CLOSED;
+        return type == SensorEventType.DOOR_OPEN || type == SensorEventType.DOOR_CLOSED;
     }
 
-    private static Room findRoomWhereChangedDoor(SmartHome smartHome, String objectId) {
+    private static void changeDoorState(SensorEvent event, Door door) {
 
-        for (Room room : smartHome.getRooms()) {
-            for (Door door : room.getDoors()) {
-                if (door.getId().equals(objectId)) {
-                    return room;
-                }
-            }
-        }
-        return null;
+        String action = event.getType() == SensorEventType.DOOR_OPEN ? "opened" : "closed";
+        door.setOpen(event.getType() == SensorEventType.DOOR_OPEN);
+        System.out.println("Door " + door.getId() + " was " + action);
     }
-
-    private static Door findChangedDoorInRoom(Room room, String objectId) {
-
-        for (Door door : room.getDoors()) {
-            if (door.getId().equals(objectId)) {
-                return door;
-            }
-        }
-        return null;
-    }
-
-    private static void changeDoorState(SensorEvent event, Room room, Door door) {
-
-        String action = event.getType() == DOOR_OPEN ? "opened" : "closed";
-        door.setOpen(event.getType() == DOOR_OPEN);
-        System.out.println("Door " + door.getId() + " in room " + room.getName() + " was " + action);
-    }
-
 }

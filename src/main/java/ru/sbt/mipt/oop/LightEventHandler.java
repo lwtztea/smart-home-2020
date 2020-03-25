@@ -1,7 +1,5 @@
 package ru.sbt.mipt.oop;
 
-import static ru.sbt.mipt.oop.SensorEventType.*;
-
 public class LightEventHandler implements EventHandler {
 
     private SmartHome smartHome;
@@ -14,46 +12,23 @@ public class LightEventHandler implements EventHandler {
 
         if (!isLightEvent(event.getType())) return;
 
-        Room changedRoom = findRoomWhereChangedLight(smartHome, event.getObjectId());
-        if (changedRoom == null) return;
-
-        Light changedLight = findChangedLightInRoom(changedRoom, event.getObjectId());
-        if (changedLight == null) return;
-
-        changeLightState(event, changedRoom, changedLight);
+        smartHome.execute(object -> {
+            if (!(object instanceof Light)) return;
+            Light light = (Light) object;
+            if (!(light.getId().equals(event.getObjectId()))) return;
+            changeLightState(event, light);
+        });
     }
 
     private static boolean isLightEvent(SensorEventType type) {
 
-        return type == LIGHT_ON || type == LIGHT_OFF;
+        return type == SensorEventType.LIGHT_ON || type == SensorEventType.LIGHT_OFF;
     }
 
-    private static Room findRoomWhereChangedLight(SmartHome smartHome, String objectId) {
+    private static void changeLightState(SensorEvent event, Light light) {
 
-        for (Room room : smartHome.getRooms()) {
-            for (Light light : room.getLights()) {
-                if (light.getId().equals(objectId)) {
-                    return room;
-                }
-            }
-        }
-        return null;
-    }
-
-    private static Light findChangedLightInRoom(Room room, String objectId) {
-
-        for (Light light : room.getLights()) {
-            if (light.getId().equals(objectId)) {
-                return light;
-            }
-        }
-        return null;
-    }
-
-    private static void changeLightState(SensorEvent event, Room room, Light light) {
-
-        String action = event.getType() == LIGHT_ON ? "on" : "off";
-        light.setOn(event.getType() == LIGHT_ON);
-        System.out.println("Light " + light.getId() + " in room " + room.getName() + " was turned " + action);
+        String action = event.getType() == SensorEventType.LIGHT_ON ? "on" : "off";
+        light.setOn(event.getType() == SensorEventType.LIGHT_ON);
+        System.out.println("Light " + light.getId() + " was turned " + action);
     }
 }
