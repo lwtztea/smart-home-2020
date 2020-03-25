@@ -12,15 +12,7 @@ public class Application {
         List<EventHandler> handlers = Arrays.asList(new LightEventHandler(smartHome), new DoorEventHandler(smartHome),
                 new HallDoorEventHandler(smartHome));
 
-        SensorEventGenerator eventGenerator = new RandomEventGenerator();
-        SensorEvent event = eventGenerator.getEvent();
-
-        while (event != null) {
-            System.out.println("Got event: " + event);
-            for (EventHandler handler : handlers) {
-                handler.handleSmartHomeEvent(event);
-            }
-            event = eventGenerator.getEvent();
-        }
+        SensorEventsManager sensorEventsManager = new SensorEventsManager(handlers);
+        sensorEventsManager.start();
     }
 }
