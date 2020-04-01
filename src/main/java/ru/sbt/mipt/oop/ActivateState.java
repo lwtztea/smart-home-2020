@@ -1,13 +1,9 @@
-package ru.sbt.mipt.oop;
+package ru.sbt.mipt.oop.objects.security.states;
 
-public class ActivateState implements SignalSystem {
+public class ActivateState extends SmartAlarmStates {
 
-    private int code;
-    private SmartAlarm smartAlarm;
-
-    public ActivateState(SmartAlarm smartAlarm, int code) {
-        this.smartAlarm = smartAlarm;
-        this.code = code;
+    public ActivateState(SmartAlarm smartAlarm) {
+        super(smartAlarm);
     }
 
     @Override
@@ -18,15 +14,12 @@ public class ActivateState implements SignalSystem {
     @Override
     public void deactivate(int code) {
 
-        if (this.code == code) {
-            DeactivateState deactivateState = new DeactivateState(smartAlarm);
-            smartAlarm.setState(deactivateState);
-            deactivateState.deactivate(code);
+        if (smartAlarm.getCode() == code) {
+            System.out.println("Smart Alarm is off!");
+            smartAlarm.changeState(new DeactivateState(smartAlarm));
         } else {
             System.out.println("ALARM!");
-            AlarmState alarmState = new AlarmState(smartAlarm, code);
-            smartAlarm.setState(alarmState);
-            alarmState.alarm();
+            smartAlarm.changeState(new AlarmingState(smartAlarm));
         }
     }
 
@@ -34,8 +27,6 @@ public class ActivateState implements SignalSystem {
     public void alarm() {
 
         System.out.println("ALARM!");
-        AlarmState alarmState = new AlarmState(smartAlarm, code);
-        smartAlarm.setState(alarmState);
-        alarmState.alarm();
+        smartAlarm.changeState(new AlarmingState(smartAlarm));
     }
 }
