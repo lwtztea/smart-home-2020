@@ -1,19 +1,20 @@
 package ru.sbt.mipt.oop;
 
-public class DeactivateState implements SignalSystem {
-
-    private SmartAlarm smartAlarm;
+public class DeactivateState extends SmartAlarmStates {
 
     public DeactivateState(SmartAlarm smartAlarm) {
-        this.smartAlarm = smartAlarm;
+        super(smartAlarm);
     }
 
     @Override
     public void activate(int code) {
 
-        ActivateState activateState = new ActivateState(smartAlarm, code);
-        smartAlarm.setState(activateState);
-        activateState.activate(code);
+        if (code == smartAlarm.getCode()) {
+            System.out.println("Smart Alarm is on!");
+            smartAlarm.changeState(new ActivateState(smartAlarm));
+        } else {
+            System.out.println("Incorrect code. Try again");
+        }
     }
 
     @Override
