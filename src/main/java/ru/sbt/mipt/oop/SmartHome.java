@@ -8,14 +8,6 @@ public class SmartHome implements Actionable {
     private Collection<Room> rooms;
     private SmartAlarm smartAlarm;
 
-    public SmartHome() {
-        rooms = new ArrayList<>();
-    }
-
-    public SmartHome(Collection<Room> rooms) {
-        this.rooms = rooms;
-    }
-
     public SmartHome(Collection<Room> rooms, SmartAlarm smartAlarm) {
         this.rooms = rooms;
         this.smartAlarm = smartAlarm;
