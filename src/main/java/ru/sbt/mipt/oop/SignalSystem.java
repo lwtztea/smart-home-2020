@@ -1,9 +1,14 @@
 package ru.sbt.mipt.oop;
 
-public interface SignalSystem {
+public abstract class SmartAlarmStates {
 
-    public void activate(int code);
-    public void deactivate(int code);
-    public void alarm();
+    SmartAlarm smartAlarm;
 
+    SmartAlarmStates(SmartAlarm smartAlarm) {
+        this.smartAlarm = smartAlarm;
+    }
+
+    public abstract void activate(int code);
+    public abstract void deactivate(int code);
+    public abstract void alarm();
 }
