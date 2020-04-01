@@ -14,6 +14,10 @@ public class SmartAlarm {
         this.state = state;
     }
 
+    public SmartAlarmStates getState() {
+        return state;
+    }
+
     public int getCode() {
         return code;
     }
