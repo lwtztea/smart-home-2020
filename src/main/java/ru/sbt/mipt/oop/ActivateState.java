@@ -1,4 +1,4 @@
-package ru.sbt.mipt.oop.objects.security.states;
+package ru.sbt.mipt.oop;
 
 public class ActivateState extends SmartAlarmStates {
 
