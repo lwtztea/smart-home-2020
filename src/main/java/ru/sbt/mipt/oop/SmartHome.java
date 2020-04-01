@@ -6,7 +6,7 @@ import java.util.Collection;
 public class SmartHome implements Actionable {
 
     private Collection<Room> rooms;
-    private SignalSystem signalSystem;
+    private SmartAlarm smartAlarm;
 
     public SmartHome() {
         rooms = new ArrayList<>();
@@ -16,13 +16,17 @@ public class SmartHome implements Actionable {
         this.rooms = rooms;
     }
 
-    public SmartHome(Collection<Room> rooms, SignalSystem signalSystem) {
+    public SmartHome(Collection<Room> rooms, SmartAlarm smartAlarm) {
         this.rooms = rooms;
-        this.signalSystem = signalSystem;
+        this.smartAlarm = smartAlarm;
     }
 
     public void addRoom(Room room) {
         rooms.add(room);
+    }
+    
+    public SmartAlarm getSmartAlarm() {
+        return smartAlarm;
     }
 
     @Override
