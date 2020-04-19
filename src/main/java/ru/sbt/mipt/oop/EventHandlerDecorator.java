@@ -17,11 +17,11 @@ public class EventHandlerDecorator implements EventHandler {
     @Override
     public void handleEvent(SensorEvent event) {
 
-        if (smartAlarm.getState() instanceof ActivateState && event.getType() != ALARM_DEACTIVATE) {
+        if (smartAlarm.getState() instanceof ActivateState) {
             smartAlarm.alarm();
         }
 
-        if (smartAlarm.getState() instanceof AlarmingState && event.getType() != ALARM_DEACTIVATE) {
+        if (smartAlarm.getState() instanceof AlarmingState) {
             System.out.println("Sending sms");
             return;
         }
