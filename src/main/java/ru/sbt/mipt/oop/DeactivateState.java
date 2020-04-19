@@ -1,10 +1,10 @@
 package ru.sbt.mipt.oop;
 
-public class DeactivateState extends SmartAlarmStates {
+public class DeactivateState implements SmartAlarmStates {
 
-    public DeactivateState(SmartAlarm smartAlarm) {
-        super(smartAlarm);
-    }
+    SmartAlarm smartAlarm;
+
+    public DeactivateState(SmartAlarm smartAlarm) { this.smartAlarm = smartAlarm; }
 
     @Override
     public void activate(int code) {
