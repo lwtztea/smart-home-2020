@@ -12,7 +12,8 @@ public class Application {
         List<EventHandler> handlers = Arrays.asList(new LightEventHandler(smartHome), new DoorEventHandler(smartHome),
                 new HallDoorEventHandler(smartHome));
 
-        SensorEventsManager sensorEventsManager = new SensorEventsManager(handlers);
+        EventHandlerDecorator eventHandlerDecorator = new EventHandlerDecorator(smartHome, handlers);
+        SensorEventsProcessor sensorEventsProcessor = new SensorEventsProcessor(Collections.singletonList(eventHandlerDecorator));
         sensorEventsManager.start();
     }
 }
